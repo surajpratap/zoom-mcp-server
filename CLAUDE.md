@@ -17,6 +17,14 @@ npm run dev      # Run directly with tsx (development)
 - `ZOOM_CLIENT_SECRET` — Zoom app client secret
 - `ZOOM_MODE` — `readonly` (default) or `readwrite`
 
+## Installation
+
+```bash
+npm install -g zoom-mcp-server
+```
+
+Or use directly with npx (no install needed).
+
 ## Adding to Claude Code
 
 Add to `~/.claude/settings.json` under `mcpServers`:
@@ -24,8 +32,24 @@ Add to `~/.claude/settings.json` under `mcpServers`:
 ```json
 {
   "zoom": {
-    "command": "node",
-    "args": ["/Users/surajpratap/projects/zoom_client/dist/index.js"],
+    "command": "npx",
+    "args": ["zoom-mcp-server"],
+    "env": {
+      "ZOOM_ACCOUNT_ID": "...",
+      "ZOOM_CLIENT_ID": "...",
+      "ZOOM_CLIENT_SECRET": "...",
+      "ZOOM_MODE": "readonly"
+    }
+  }
+}
+```
+
+Or if installed globally or locally:
+
+```json
+{
+  "zoom": {
+    "command": "zoom-mcp-server",
     "env": {
       "ZOOM_ACCOUNT_ID": "...",
       "ZOOM_CLIENT_ID": "...",

@@ -1,21 +1,32 @@
 {
-  "name": "zoom_client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
+  "name": "@kindflow/zoom-mcp-server",
+  "version": "1.0.1",
+  "description": "MCP server for Zoom API — meetings, transcripts, users, and team chat",
+  "main": "dist/index.js",
   "type": "module",
+  "bin": {
+    "zoom-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "zoom",
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "meetings",
+    "transcripts"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^4.3.6"
