@@ -25,8 +25,16 @@
     "meetings",
     "transcripts"
   ],
-  "author": "",
+  "author": "surajpratap",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/surajpratap/zoom-mcp-server.git"
+  },
+  "homepage": "https://github.com/surajpratap/zoom-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/surajpratap/zoom-mcp-server/issues"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^4.3.6"

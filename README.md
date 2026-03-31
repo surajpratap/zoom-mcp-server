@@ -98,7 +98,7 @@ Set `ZOOM_MODE` to `readwrite` to enable creating meetings, sending chat message
 ## Development
 
 ```bash
-git clone https://github.com/kindflow/zoom-mcp-server.git
+git clone https://github.com/surajpratap/zoom-mcp-server.git
 cd zoom-mcp-server
 npm install
 npm test         # Run tests
