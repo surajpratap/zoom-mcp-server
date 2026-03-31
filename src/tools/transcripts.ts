@@ -38,30 +38,70 @@ export function createTranscriptTools(client: ZoomClient) {
         meetingId: z.string().describe('The meeting ID or UUID (use double-encoded UUID if it starts with / or contains //)'),
       },
       handler: async (args: Record<string, unknown>): Promise<ToolResult> => {
-        // Get recording files for this meeting
+        const meetingId = args.meetingId as string;
+
+        // Strategy 1: Get recording files and look for TRANSCRIPT file type
         const data = await client.request<{
           recording_files: ZoomRecordingFile[];
           topic: string;
-        }>(`/meetings/${args.meetingId}/recordings`);
+        }>(`/meetings/${meetingId}/recordings`, {
+          params: { include_fields: 'download_access_token' },
+        });
 
-        // Find the transcript file (VTT)
         const transcriptFile = data.recording_files?.find(
           (f) => f.file_type === 'TRANSCRIPT' || f.recording_type === 'audio_transcript',
         );
 
-        if (!transcriptFile) {
+        if (transcriptFile) {
+          const vttContent = await client.fetchRaw(transcriptFile.download_url);
+          const parsed = parseVtt(vttContent);
           return {
-            content: [{ type: 'text', text: `No transcript found for meeting ${args.meetingId}. The meeting may not have cloud recording or transcription enabled.` }],
-            isError: true,
+            content: [{ type: 'text', text: `# Transcript: ${data.topic}\n\n${parsed}` }],
           };
         }
 
-        // Download and parse the VTT file
-        const vttContent = await client.fetchRaw(transcriptFile.download_url);
-        const parsed = parseVtt(vttContent);
+        // Strategy 2: Try the AI Companion transcript endpoint
+        // GET /meetings/{uuid}/transcript returns JSON with a download_url for the VTT file
+        try {
+          const transcriptMeta = await client.request<{
+            download_url: string;
+            can_download: boolean;
+            meeting_topic: string;
+          }>(`/meetings/${meetingId}/transcript`);
+
+          if (transcriptMeta.download_url) {
+            const vttContent = await client.fetchRaw(transcriptMeta.download_url);
+            const parsed = parseVtt(vttContent);
+            return {
+              content: [{ type: 'text', text: `# Transcript: ${data.topic}\n\n${parsed}` }],
+            };
+          }
+        } catch {
+          // Strategy 2 failed, continue
+        }
+
+        // Strategy 4: Fall back to meeting summary content if available
+        try {
+          const summary = await client.request<{
+            summary_content: string;
+            summary_title: string;
+          }>(`/meetings/${meetingId}/meeting_summary`);
+
+          if (summary.summary_content) {
+            return {
+              content: [{
+                type: 'text',
+                text: `# ${summary.summary_title}\n\nNote: Full VTT transcript not available via API. Returning AI-generated meeting summary instead.\n\n${summary.summary_content}`,
+              }],
+            };
+          }
+        } catch {
+          // No summary either
+        }
 
         return {
-          content: [{ type: 'text', text: `# Transcript: ${data.topic}\n\n${parsed}` }],
+          content: [{ type: 'text', text: `No transcript found for meeting ${meetingId}. The recording files exist but no transcript file (VTT) was found. Check that audio transcription is enabled in Zoom Settings > Recording > Audio transcript.` }],
+          isError: true,
         };
       },
     },
