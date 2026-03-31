@@ -1,6 +1,6 @@
 {
   "name": "@kindflow/zoom-mcp-server",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "MCP server for Zoom API — meetings, transcripts, users, and team chat",
   "main": "dist/index.js",
   "type": "module",
