@@ -25,6 +25,16 @@ You need a **Zoom Server-to-Server OAuth app**. Create one at [marketplace.zoom.
 
 ## Setup with Claude Code
 
+### Quick setup (CLI)
+
+```bash
+claude mcp add zoom -- npx @kindflow/zoom-mcp-server
+```
+
+Then set your environment variables in `~/.claude/settings.json` under the `zoom` server entry.
+
+### Manual setup
+
 Add to `~/.claude/settings.json`:
 
 ```json
