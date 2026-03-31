@@ -105,6 +105,37 @@ Set `ZOOM_MODE` to `readwrite` to enable creating meetings, sending chat message
 | `ZOOM_CLIENT_SECRET` | Yes | Zoom app client secret |
 | `ZOOM_MODE` | No | `readonly` (default) or `readwrite` |
 
+## Troubleshooting
+
+**`sh: zoom-mcp-server: command not found` when using npx**
+
+This happens with `asdf` version manager. Use one of these alternatives:
+
+Install globally, then reference directly:
+```bash
+npm install -g @kindflow/zoom-mcp-server
+```
+
+```json
+{
+  "zoom": {
+    "command": "zoom-mcp-server",
+    "env": { ... }
+  }
+}
+```
+
+Or point to the installed file with node:
+```json
+{
+  "zoom": {
+    "command": "node",
+    "args": ["node_modules/@kindflow/zoom-mcp-server/dist/index.js"],
+    "env": { ... }
+  }
+}
+```
+
 ## Development
 
 ```bash
